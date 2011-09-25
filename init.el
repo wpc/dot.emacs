@@ -24,4 +24,4 @@
 
 (menu-bar-mode)
 (scroll-bar-mode)
-;;(tabbar-mode)
+(tabbar-mode)
