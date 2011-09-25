@@ -10101,44 +10101,51 @@ If so, we don't ever want to use bounce-indent."
                (forward-line 0))
              (looking-at "\\s-*//"))))))
        
+;; (defun js2-indent-line ()
+;;   "Indent the current line as JavaScript source text."
+;;   (interactive)
+;;   (let (parse-status
+;;         current-indent
+;;         offset
+;;         indent-col
+;;         moved
+;;         ;; don't whine about errors/warnings when we're indenting.
+;;         ;; This has to be set before calling parse-partial-sexp below.
+;;         (inhibit-point-motion-hooks t))
+;;     (setq parse-status (save-excursion
+;;                           (parse-partial-sexp (point-min)
+;;                                               (point-at-bol)))
+;;           offset (- (point) (save-excursion
+;;                                (back-to-indentation)
+;;                                (setq current-indent (current-column))
+;;                                (point))))
+;;     (js2-with-underscore-as-word-syntax
+;;      (if (nth 4 parse-status)
+;;          (js2-lineup-comment parse-status)
+;;        (setq indent-col (js-proper-indentation parse-status))
+;;        ;; see comments below about js2-mode-last-indented-line
+;;        (when 
+;;            (cond
+;;             ;; bounce-indenting is disabled during electric-key indent.
+;;             ;; It doesn't work well on first line of buffer.
+;;             ((and js2-bounce-indent-p
+;;                   (not (js2-same-line (point-min)))
+;;                   (not (js2-1-line-comment-continuation-p)))
+;;              (js2-bounce-indent indent-col parse-status)
+;;              (setq moved t))
+;;             ;; just indent to the guesser's likely spot
+;;             ((/= current-indent indent-col)
+;;              (indent-line-to indent-col)
+;;              (setq moved t)))
+;;          (when (and moved (plusp offset))
+;;            (forward-char offset)))))))
+
+(require `js)
 (defun js2-indent-line ()
-  "Indent the current line as JavaScript source text."
-  (interactive)
-  (let (parse-status
-        current-indent
-        offset
-        indent-col
-        moved
-        ;; don't whine about errors/warnings when we're indenting.
-        ;; This has to be set before calling parse-partial-sexp below.
-        (inhibit-point-motion-hooks t))
-    (setq parse-status (save-excursion
-                          (parse-partial-sexp (point-min)
-                                              (point-at-bol)))
-          offset (- (point) (save-excursion
-                               (back-to-indentation)
-                               (setq current-indent (current-column))
-                               (point))))
-    (js2-with-underscore-as-word-syntax
-     (if (nth 4 parse-status)
-         (js2-lineup-comment parse-status)
-       (setq indent-col (js-proper-indentation parse-status))
-       ;; see comments below about js2-mode-last-indented-line
-       (when 
-           (cond
-            ;; bounce-indenting is disabled during electric-key indent.
-            ;; It doesn't work well on first line of buffer.
-            ((and js2-bounce-indent-p
-                  (not (js2-same-line (point-min)))
-                  (not (js2-1-line-comment-continuation-p)))
-             (js2-bounce-indent indent-col parse-status)
-             (setq moved t))
-            ;; just indent to the guesser's likely spot
-            ((/= current-indent indent-col)
-             (indent-line-to indent-col)
-             (setq moved t)))
-         (when (and moved (plusp offset))
-           (forward-char offset)))))))
+   "Indent the current line as JavaScript source text."
+   (js-indent-line)
+)
+
 
 (defun js2-indent-region (start end)
   "Indent the region, but don't use bounce indenting."
