@@ -26,3 +26,4 @@
 (menu-bar-mode)
 (scroll-bar-mode)
 (tabbar-mode)
+(global-hl-line-mode)
