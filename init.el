@@ -6,6 +6,7 @@
 
 (global-set-key (kbd "C-x f") 'find-file-in-project)
 (setq ruby-indent-level 2)
+(setq ring-bell-function 'ignore)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
