@@ -34,3 +34,5 @@
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
 (require 'solarized-dark-theme)
+(require 'smart-tab)
+(global-set-key (kbd "TAB") 'smart-tab)
