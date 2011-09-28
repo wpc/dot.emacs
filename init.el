@@ -5,6 +5,8 @@
 
 
 (global-set-key (kbd "C-x f") 'find-file-in-project)
+(global-set-key "\C-x\C-\\" 'goto-last-change)
+
 (setq ruby-indent-level 2)
 (setq ring-bell-function 'ignore)
 
