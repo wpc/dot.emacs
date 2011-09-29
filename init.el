@@ -3,14 +3,6 @@
 	     '("marmalade" . "http://marmalade-repo.org/packages/") t)
 (package-initialize)
 
-
-(global-set-key (kbd "C-x f") 'find-file-in-project)
-(global-set-key "\C-x\C-\\" 'goto-last-change)
-
-(setq ruby-indent-level 2)
-(setq ring-bell-function 'ignore)
-
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -33,6 +25,19 @@
 (global-hl-line-mode)
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
-(require 'solarized-dark-theme)
+;; (require 'solarized-dark-theme)
 (require 'smart-tab)
+(require 'extend-selection)
+(require 'select-text-in-quote)
+
+
+(setq ruby-indent-level 2)
+(setq ring-bell-function 'ignore)
+
+
 (global-set-key (kbd "TAB") 'smart-tab)
+(global-set-key (kbd "C-x f") 'find-file-in-project)
+(global-set-key (kbd "C-x C-\\") 'goto-last-change)
+(global-set-key (kbd "C-m") 'newline-and-indent)
+(global-set-key (kbd "M-8") 'extend-selection)
+(global-set-key (kbd "M-*") 'select-text-in-quote)
