@@ -33,11 +33,17 @@
 
 (setq ruby-indent-level 2)
 (setq ring-bell-function 'ignore)
+(setq scheme-program-name "mzscheme")
+(add-hook 'scheme-mode-hook '(lambda()(paredit-mode 1)))
 
 
 (global-set-key (kbd "TAB") 'smart-tab)
-(global-set-key (kbd "C-x f") 'find-file-in-project)
+(global-set-key (kbd "<f1>") 'find-file-in-project)
 (global-set-key (kbd "C-x C-\\") 'goto-last-change)
 (global-set-key (kbd "C-m") 'newline-and-indent)
 (global-set-key (kbd "M-8") 'extend-selection)
-(global-set-key (kbd "M-*") 'select-text-in-quote)
+(global-set-key (kbd "M-9") 'select-text-in-quote)
+
+
+(setq ffip-patterns '("*.xml" "*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.rake" "*.js" "*.pl"
+    "*.sh" "*.erl" "*.hs" "*.ml" "*.scm" "*.erb" "*.rxml" "*.java" ))
