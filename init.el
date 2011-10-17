@@ -43,3 +43,6 @@
 
 (setq ffip-patterns '("*.xml" "*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.rake" "*.js" "*.pl"
     "*.sh" "*.erl" "*.hs" "*.ml" "*.scm" "*.erb" "*.rxml" "*.java" ))
+
+(setq yas/root-directory "~/.emacs.d/snippets")
+(yas/load-directory yas/root-directory)  
