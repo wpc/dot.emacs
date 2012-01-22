@@ -18,6 +18,10 @@
 ;; experience in both cocoa and -nw mode 
 (setq default-frame-alist '((background-color . "white")
                             (foreground-color . "black")))
+(setq initial-frame-alist '((top . 100)
+                            (left . 200)
+                            (width . 120)
+                            (height . 35)))
 
 (menu-bar-mode)
 (scroll-bar-mode)
