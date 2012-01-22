@@ -12,8 +12,12 @@
  '(js2-indent-on-enter-key t)
  '(js2-enter-indents-newline t))
 
+;; increase font size
 (set-face-attribute 'default nil :height 130)
-
+;; hard code back/fore ground color, so that we get simular editing
+;; experience in both cocoa and -nw mode 
+(setq default-frame-alist '((background-color . "white")
+                            (foreground-color . "black")))
 
 (menu-bar-mode)
 (scroll-bar-mode)
@@ -22,6 +26,7 @@
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
 ;; (require 'solarized-dark-theme)
+;; (load-theme 'whiteboard)
 (require 'smart-tab)
 (require 'extend-selection)
 (require 'select-text-in-quote)
