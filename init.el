@@ -24,6 +24,15 @@
                             (left . 200)
                             (width . 120)
                             (height . 35)))
+;; fix css-mode indentation problem
+;; (http://www.stokebloke.com/wordpress/2008/03/21/css-mode-indent-buffer-fix/)
+(setq cssm-indent-level 4)
+(setq cssm-newline-before-closing-bracket t)
+(setq cssm-indent-function #'cssm-c-style-indenter)
+(setq cssm-mirror-mode nil)
+
+
+
 
 (menu-bar-mode)
 (scroll-bar-mode)
