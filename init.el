@@ -36,6 +36,7 @@
 (require 'smart-tab)
 (require 'extend-selection)
 (require 'select-text-in-quote)
+(require 'ruby-compilation)
 
 
 (setq ruby-indent-level 2)
