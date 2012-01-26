@@ -1,0 +1,3 @@
+[submodule "site-lisp/textmate.el"]
+	path = site-lisp/textmate.el
+	url = git://github.com/defunkt/textmate.el

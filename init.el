@@ -46,6 +46,8 @@
 (require 'extend-selection)
 (require 'select-text-in-quote)
 (require 'ruby-compilation)
+(add-to-list 'load-path "~/.emacs.d/site-lisp/textmate.el")
+(require 'textmate)
 
 
 (setq ruby-indent-level 2)
