@@ -1,3 +1,5 @@
+(server-start)
+
 (require 'package)
 (add-to-list 'package-archives
 	     '("marmalade" . "http://marmalade-repo.org/packages/") t)
@@ -48,6 +50,7 @@
 (require 'ruby-compilation)
 (add-to-list 'load-path "~/.emacs.d/site-lisp/textmate.el")
 (require 'textmate)
+(textmate-mode)
 
 
 (setq ruby-indent-level 2)
@@ -69,3 +72,4 @@
 
 (setq yas/root-directory "~/.emacs.d/snippets")
 (yas/load-directory yas/root-directory)  
+
