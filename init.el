@@ -22,10 +22,10 @@
 ;; experience in both cocoa and -nw mode 
 (setq default-frame-alist '((background-color . "white")
                             (foreground-color . "black")))
-(setq initial-frame-alist '((top . 100)
-                            (left . 200)
-                            (width . 120)
-                            (height . 35)))
+(setq initial-frame-alist '((top . 50)
+                            (left . 50)
+                            (width . 135)
+                            (height . 42)))
 ;; fix css-mode indentation problem
 ;; (http://www.stokebloke.com/wordpress/2008/03/21/css-mode-indent-buffer-fix/)
 (setq cssm-indent-level 4)
@@ -55,6 +55,16 @@
 (require 'rvm)
 (rvm-use-default)
 
+;; speedbar config
+(setq speedbar-show-unknown-files t)
+(add-hook 'speedbar-mode-hook 
+    (lambda () 
+        (auto-raise-mode 1) 
+        (add-to-list 'speedbar-frame-parameters '(top . 50)) 
+        (add-to-list 'speedbar-frame-parameters '(left . 1190))
+        (add-to-list 'speedbar-frame-parameters '(width . 25))
+    )
+) 
 
 
 (setq ruby-indent-level 2)
