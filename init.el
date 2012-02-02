@@ -51,6 +51,10 @@
 (add-to-list 'load-path "~/.emacs.d/site-lisp/textmate.el")
 (require 'textmate)
 (textmate-mode)
+(add-to-list 'load-path "~/.emacs.d/site-lisp/rvm.el")
+(require 'rvm)
+(rvm-use-default)
+
 
 
 (setq ruby-indent-level 2)
