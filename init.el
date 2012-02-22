@@ -41,10 +41,12 @@
 (tabbar-mode)
 (global-hl-line-mode)
 
+(setq-default fill-column 120)
+
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
 ;; (require 'solarized-dark-theme)
 ;; (load-theme 'whiteboard)
-(require 'smart-tab)
+;; (require 'smart-tab)
 (require 'extend-selection)
 (require 'select-text-in-quote)
 
@@ -105,6 +107,11 @@
 (add-to-list 'load-path "~/.emacs.d/site-lisp/rhtml.git")
 (require 'rhtml-mode)
 
+(add-hook 'rhtml-mode-hook
+          (lambda ()
+            (yas/minor-mode 1)))
+          
+
 ;; speedbar config
 (setq speedbar-show-unknown-files t)
 (add-hook 'speedbar-mode-hook 
@@ -116,24 +123,121 @@
     )
 )
 
+;; ruby-mode
+
+(add-hook 'ruby-mode-hook
+          #'(lambda ()
+              (setq ruby-indent-level 2)))
 
 
-(setq ruby-indent-level 2)
 (setq ring-bell-function 'ignore)
 (setq scheme-program-name "mzscheme")
 (add-hook 'scheme-mode-hook '(lambda()(paredit-mode 1)))
 
 
-(global-set-key (kbd "TAB") 'smart-tab)
-(global-set-key (kbd "<f1>") 'find-file-in-project)
+(defun ruby-get-containing-block ()
+  (let ((pos (point))
+        (block nil))
+    (save-match-data
+      (save-excursion
+        (catch 'break
+          ;; If in the middle of or at end of do, go back until at start
+          (while (and (not (looking-at "do"))
+                      (string-equal (word-at-point) "do"))
+            (backward-char 1))
+          ;; Keep searching for the containing block (i.e. the block that begins
+          ;; before our point, and ends after it)
+          (while (not block)
+            (if (looking-at "do\\|{")
+                (let ((start (point)))
+                  (ruby-forward-sexp)
+                  (if (> (point) pos)
+                      (setq block (cons start (point)))
+                    (goto-char start))))
+            (if (not (search-backward-regexp "do\\|{" (point-min) t))
+                (throw 'break nil))))))
+        block))
+
+(defun ruby-goto-containing-block-start ()
+  (interactive)
+  (let ((block (ruby-get-containing-block)))
+    (if block
+        (goto-char (car block)))))
+
+(defun ruby-flip-containing-block-type ()
+  (interactive)
+  (save-excursion
+    (let ((block (ruby-get-containing-block)))
+      (goto-char (car block))
+      (save-match-data
+        (let ((strings (if (looking-at "do")
+                           (cons
+                            (if (= 3 (count-lines (car block) (cdr block)))
+                                "do\\( *|[^|]+|\\)? *\n *\\(.*?\\) *\n *end"
+                              "do\\( *|[^|]+|\\)? *\\(\\(.*\n?\\)+\\) *end")
+                            "{\\1 \\2 }")
+                         (cons
+                          "{\\( *|[^|]+|\\)? *\\(\\(.*\n?\\)+\\) *}"
+                          (if (= 1 (count-lines (car block) (cdr block)))
+                              "do\\1\n\\2\nend"
+                            "do\\1\\2end")))))
+          (when (re-search-forward (car strings) (cdr block) t)
+           (replace-match (cdr strings) t)
+            (delete-trailing-whitespace (match-beginning 0) (match-end 0))
+            (indent-region (match-beginning 0) (match-end 0))))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(global-set-key (kbd "<escape>") 'hippie-expand)
 (global-set-key (kbd "C-x C-\\") 'goto-last-change)
 (global-set-key (kbd "C-m") 'newline-and-indent)
 (global-set-key (kbd "M-8") 'extend-selection)
 (global-set-key (kbd "M-9") 'select-text-in-quote)
+(global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
 
 
 (setq ffip-patterns '("*.xml" "*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.rake" "*.js" "*.pl"
     "*.sh" "*.erl" "*.hs" "*.ml" "*.scm" "*.erb" "*.rxml" "*.java" "*.scss" "*.css" "*.coffee" ))
+
+
+;; duplicate line
+(defun duplicate-line (arg)
+  "Duplicate current line, leaving point in lower line."
+  (interactive "*p")
+
+  ;; save the point for undo
+  (setq buffer-undo-list (cons (point) buffer-undo-list))
+
+  ;; local variables for start and end of line
+  (let ((bol (save-excursion (beginning-of-line) (point)))
+        eol)
+    (save-excursion
+
+      ;; don't use forward-line for this, because you would have
+      ;; to check whether you are at the end of the buffer
+      (end-of-line)
+      (setq eol (point))
+
+      ;; store the line and disable the recording of undo information
+      (let ((line (buffer-substring bol eol))
+            (buffer-undo-list t)
+            (count arg))
+        ;; insert the line arg times
+        (while (> count 0)
+          (newline)         ;; because there is no newline in 'line'
+          (insert line)
+          (setq count (1- count)))
+        )
+
+      ;; create the undo information
+      (setq buffer-undo-list (cons (cons eol (point)) buffer-undo-list)))
+    ) ; end-of-let
+
+  ;; put the point in the lowest line and return
+  (next-line arg))
+
+(global-set-key (kbd "C-c C-d") 'duplicate-line)
+
 
 (setq yas/root-directory "~/.emacs.d/snippets")
 (yas/load-directory yas/root-directory)  
