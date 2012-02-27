@@ -12,6 +12,7 @@
 (menu-bar-mode)
 (setq-default fill-column 120)
 (setq mode-require-final-newline -1)
+(setq shift-select-mode t)
 
 
 (custom-set-variables
@@ -60,7 +61,7 @@
   (rvm-activate-corresponding-ruby)
   (visit-tags-table (textmate-project-root)))
 
-(defun rgrep-in-project (regexp &optional files dir confirm)
+(defun grep-in-project (regexp &optional files dir confirm)
   "rgrep through textmate-project-root"
    (interactive
    (progn
