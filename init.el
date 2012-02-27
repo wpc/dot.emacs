@@ -7,27 +7,30 @@
              '("tromey" . "http://tromey.com/elpa/"))
 (package-initialize)
 
+(add-to-list 'load-path "~/.emacs.d/site-lisp/")
+
+(menu-bar-mode)
+(setq-default fill-column 120)
+(setq mode-require-final-newline -1)
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("aed9aa67f2adc9a72a02c30f4ebdb198e31874ae45d49125206d5ece794a8826" default)))
+ '(ido-ubiquitous-enabled nil t)
+ '(js-indent-level 2)
  '(js2-cleanup-whitespace t)
- '(js2-indent-on-enter-key t)
  '(js2-enter-indents-newline t)
- '(ido-ubiquitous-enabled nil)
- '(js-indent-level 2))
+ '(js2-indent-on-enter-key t))
 
 ;; increase font size
 (set-face-attribute 'default nil :height 130)
-;; hard code back/fore ground color, so that we get simular editing
-;; experience in both cocoa and -nw mode 
-(setq default-frame-alist '((background-color . "white")
-                            (foreground-color . "black")))
-(setq initial-frame-alist '((top . 50)
-                            (left . 50)
-                            (width . 135)
-                            (height . 42)))
+
+
+;; css mode
 ;; fix css-mode indentation problem
 ;; (http://www.stokebloke.com/wordpress/2008/03/21/css-mode-indent-buffer-fix/)
 (setq cssm-indent-level 4)
@@ -36,14 +39,6 @@
 (setq cssm-mirror-mode nil)
 
 
-(menu-bar-mode)
-(scroll-bar-mode)
-(global-hl-line-mode)
-
-(setq-default fill-column 120)
-(setq mode-require-final-newline -1)
-
-(add-to-list 'load-path "~/.emacs.d/site-lisp/")
 (require 'extend-selection)
 (require 'select-text-in-quote)
 
@@ -58,10 +53,7 @@
 (require 'textmate)
 (textmate-mode)
 
-(defun is-rails-project ()
-  (when (textmate-project-root)
-    (file-exists-p (expand-file-name "config/environment.rb" (textmate-project-root)))))
-
+;; ruby project enchancement
 (defun id-project-root (&optional args)
   (interactive "P")
   (cd (textmate-project-root))
@@ -89,14 +81,22 @@
     (if (re-search-backward "^[ \\t]*def[ \\t]+\\(test[_a-z0-9]*\\)" nil t)
 	(match-string 1))))
 
+(defvar last-ruby-test-command)
+(defvar last-ruby-test-filename)
+
 (defun run-ruby-test (test-opts)
     (let* ((path (buffer-file-name))
          (filename (file-name-nondirectory path))
          (test-path (expand-file-name "test" (textmate-project-root)))
          (command (append (list ruby-compilation-executable "-I" test-path path)
                           test-opts)))
-    (pop-to-buffer (ruby-compilation-do filename command))))
+      (set 'last-ruby-test-filename filename)
+      (set 'last-ruby-test-command command)
+      (pop-to-buffer (ruby-compilation-do filename command))))
 
+(defun run-ruby-last-test ()
+  (interactive)
+  (pop-to-buffer (ruby-compilation-do last-ruby-test-filename last-ruby-test-command)))
 
 (defun run-ruby-single-test-case ()
   (interactive)
@@ -107,7 +107,8 @@
   (interactive)
   (run-ruby-test (list)))
 
-(global-set-key [(super r)] 'run-rails-test-or-ruby-buffer)
+(global-set-key [(super r)] 'run-ruby-test-file)
+(global-set-key [(super shift r)] 'run-ruby-single-test-case)
 
 ;; rvm
 (add-to-list 'load-path "~/.emacs.d/site-lisp/rvm.el")
@@ -145,6 +146,11 @@
 (setq ring-bell-function 'ignore)
 (setq scheme-program-name "mzscheme")
 (add-hook 'scheme-mode-hook '(lambda()(paredit-mode 1)))
+
+
+
+;; transpose windows
+(require 'transpose-windows)
 
 
 (defun ruby-get-containing-block ()
@@ -251,7 +257,10 @@
 
 (global-set-key (kbd "C-c C-d") 'duplicate-line)
 
-
+;; yas/snippets
 (setq yas/root-directory "~/.emacs.d/snippets")
 (yas/load-directory yas/root-directory)  
 
+
+;; themes
+(require 'zenburn-theme)
