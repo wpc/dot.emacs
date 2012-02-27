@@ -38,15 +38,12 @@
 
 (menu-bar-mode)
 (scroll-bar-mode)
-(tabbar-mode)
 (global-hl-line-mode)
 
 (setq-default fill-column 120)
+(setq mode-require-final-newline -1)
 
 (add-to-list 'load-path "~/.emacs.d/site-lisp/")
-;; (require 'solarized-dark-theme)
-;; (load-theme 'whiteboard)
-;; (require 'smart-tab)
 (require 'extend-selection)
 (require 'select-text-in-quote)
 
@@ -65,9 +62,11 @@
   (when (textmate-project-root)
     (file-exists-p (expand-file-name "config/environment.rb" (textmate-project-root)))))
 
-(defun cd-project-root (&optional args)
+(defun id-project-root (&optional args)
   (interactive "P")
-  (cd (textmate-project-root)))
+  (cd (textmate-project-root))
+  (rvm-activate-corresponding-ruby)
+  (visit-tags-table (textmate-project-root)))
 
 (defun rgrep-in-project (regexp &optional files dir confirm)
   "rgrep through textmate-project-root"
@@ -85,15 +84,28 @@
 	   (list regexp files dir confirm))))))
    (rgrep regexp files dir confirm))
 
-(defun run-rails-test-or-ruby-buffer ()
+(defun find-ruby-testcase-name ()
+  (save-excursion
+    (if (re-search-backward "^[ \\t]*def[ \\t]+\\(test[_a-z0-9]*\\)" nil t)
+	(match-string 1))))
+
+(defun run-ruby-test (test-opts)
+    (let* ((path (buffer-file-name))
+         (filename (file-name-nondirectory path))
+         (test-path (expand-file-name "test" (textmate-project-root)))
+         (command (append (list ruby-compilation-executable "-I" test-path path)
+                          test-opts)))
+    (pop-to-buffer (ruby-compilation-do filename command))))
+
+
+(defun run-ruby-single-test-case ()
   (interactive)
-  (if (is-rails-project)
-      (let* ((path (buffer-file-name))
-             (filename (file-name-nondirectory path))
-             (test-path (expand-file-name "test" (textmate-project-root)))
-             (command (list ruby-compilation-executable "-I" test-path path)))
-        (pop-to-buffer (ruby-compilation-do filename command)))
-    (ruby-compilation-this-buffer)))
+  (run-ruby-test (list "-n" (find-ruby-testcase-name))))
+
+
+(defun run-ruby-test-file (&optional test-opts)
+  (interactive)
+  (run-ruby-test (list)))
 
 (global-set-key [(super r)] 'run-rails-test-or-ruby-buffer)
 
@@ -194,6 +206,7 @@
 (global-set-key (kbd "M-8") 'extend-selection)
 (global-set-key (kbd "M-9") 'select-text-in-quote)
 (global-set-key (kbd "C-M-<backspace>") 'backward-kill-sexp)
+(global-set-key (kbd "s-<return>") 'ns-toggle-fullscreen)
 
 
 (setq ffip-patterns '("*.xml" "*.html" "*.org" "*.txt" "*.md" "*.el" "*.clj" "*.py" "*.rb" "*.rake" "*.js" "*.pl"
