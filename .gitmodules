@@ -4,3 +4,6 @@
 [submodule "site-lisp/rhtml.git"]
 	path = site-lisp/rhtml.git
 	url = https://github.com/eschulte/rhtml.git
+[submodule "site-lisp/rvm.el"]
+	path = site-lisp/rvm.el
+	url = https://github.com/senny/rvm.el.git
