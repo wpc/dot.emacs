@@ -45,8 +45,6 @@
 
 ;; ruby-compilation
 (require 'ruby-compilation)
-(setenv "JAVA_OPTS" "-d32 -client")
-(setenv "JRUBY_OPTS" "--1.9")
  
 
 ;; textmate
