@@ -83,11 +83,13 @@
 (defvar last-ruby-test-command)
 (defvar last-ruby-test-filename)
 
-(defun run-ruby-test (test-opts)
+(defun run-ruby-test (&optional test-opts &optional loader-opts)
     (let* ((path (buffer-file-name))
          (filename (file-name-nondirectory path))
          (test-path (expand-file-name "test" (textmate-project-root)))
-         (command (append (list ruby-compilation-executable "-I" test-path path)
+         (command (append (list ruby-compilation-executable)
+                          loader-opts
+                          (list "-I" test-path path)
                           test-opts)))
       (set 'last-ruby-test-filename filename)
       (set 'last-ruby-test-command command)
@@ -105,6 +107,14 @@
 (defun run-ruby-test-file (&optional test-opts)
   (interactive)
   (run-ruby-test (list)))
+
+(defun drb-ruby-test-file ()
+  (interactive)
+  (run-ruby-test (list "-v") (list "-S" "testdrb")))
+
+(defun drb-ruby-single-test-case ()
+  (interactive)
+  (run-ruby-test (list "-n" (find-ruby-testcase-name)) (list "-S" "testdrb")))
 
 (global-set-key [(super r)] 'run-ruby-test-file)
 (global-set-key [(super shift r)] 'run-ruby-single-test-case)
