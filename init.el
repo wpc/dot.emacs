@@ -20,7 +20,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("aed9aa67f2adc9a72a02c30f4ebdb198e31874ae45d49125206d5ece794a8826" default)))
+ '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "aed9aa67f2adc9a72a02c30f4ebdb198e31874ae45d49125206d5ece794a8826" default)))
  '(ido-ubiquitous-enabled nil t)
  '(js-indent-level 2)
  '(js2-cleanup-whitespace t)
@@ -273,3 +273,12 @@
 
 ;; themes
 (require 'zenburn-theme)
+
+(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-color-theme-solarized")
+;; (require 'solarized-light-theme)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
