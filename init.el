@@ -21,14 +21,25 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("fc5fcb6f1f1c1bc01305694c59a1a861b008c534cae8d0e48e4d5e81ad718bc6" "1e7e097ec8cb1f8c3a912d7e1e0331caeed49fef6cff220be63bd2a6ba4cc365" "aed9aa67f2adc9a72a02c30f4ebdb198e31874ae45d49125206d5ece794a8826" default)))
- '(ido-ubiquitous-enabled nil t)
- '(js-indent-level 2)
- '(js2-cleanup-whitespace t)
- '(js2-enter-indents-newline t)
- '(js2-indent-on-enter-key t))
+ '(ido-ubiquitous-enabled nil t))
 
 ;; increase font size
 (set-face-attribute 'default nil :height 130)
+
+
+;; js
+(eval-after-load 'js
+  '(progn (define-key js-mode-map "{" 'paredit-open-curly)
+          (define-key js-mode-map "}" 'paredit-close-curly-and-newline)
+          (add-hook 'js-mode-hook 'esk-paredit-nonlisp)
+          (setq js-indent-level 2)
+          ;; fixes problem with pretty function font-lock
+          (define-key js-mode-map (kbd ",") 'self-insert-command)
+          (font-lock-add-keywords
+           'js-mode `(("\\(function *\\)("
+                       (0 (progn (compose-region (match-beginning 1)
+                                                 (match-end 1) "\u0192")
+                                 nil)))))))
 
 
 ;; css mode
@@ -38,6 +49,16 @@
 (setq cssm-newline-before-closing-bracket t)
 (setq cssm-indent-function #'cssm-c-style-indenter)
 (setq cssm-mirror-mode nil)
+
+;; yaml
+
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+
+
+(when (equal system-type 'darwin)
+  (setenv "PATH" (concat "/opt/local/bin:/usr/local/bin:" (getenv "PATH")))
+  (push "/opt/local/bin" exec-path))
 
 
 (require 'extend-selection)
@@ -154,8 +175,8 @@
 
 (setq ring-bell-function 'ignore)
 (setq scheme-program-name "mzscheme")
-(add-hook 'scheme-mode-hook '(lambda()(paredit-mode 1)))
 
+(add-hook 'scheme-mode-hook '(lambda()(paredit-mode 1)))
 
 
 ;; transpose windows
